@@ -1,4 +1,3 @@
-aiopg==0.13.2
 psycopg2==2.7.4
 peewee
 scrapy

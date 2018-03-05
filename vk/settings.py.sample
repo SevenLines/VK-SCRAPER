@@ -9,19 +9,28 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+
+# настройки подключения к БД
+DATABASE_CONNECTION = {
+    'database': 'vk_parse',
+    'user': "m",
+    'password': "12345",
+}
+
+# сюда пропишите id-шники пользователей
+START_IDS = [
+]
+
+# глубина отношений
+DEPTH = 3
+
+# прокся, подставьте какую-нибудь работающую
+PROXY_URL = ""
+
 BOT_NAME = 'vk'
 
 SPIDER_MODULES = ['vk.spiders']
 NEWSPIDER_MODULE = 'vk.spiders'
-
-# сюда пропишите id-шники пользователей
-START_IDS = [
-
-]
-
-DEPTH = 3
-
-PROXY_URL = "http://188.40.141.216:3128"  # прокся, подставьте какую-нибудь работающую
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'vk (+http://www.yourdomain.com)'

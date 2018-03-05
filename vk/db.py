@@ -1,12 +1,12 @@
 import peewee
 from playhouse.postgres_ext import PostgresqlExtDatabase, BinaryJSONField
 
+from .settings import DATABASE_CONNECTION
+
 # настройки подключения к БД
 db = PostgresqlExtDatabase(
-    database='vk_parse',
-    user="m",
-    password="12345",
-    register_hstore=False
+    register_hstore=False,
+    **DATABASE_CONNECTION
 )
 
 
