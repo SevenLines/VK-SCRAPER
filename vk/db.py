@@ -1,7 +1,7 @@
 import peewee
 from playhouse.postgres_ext import PostgresqlExtDatabase, BinaryJSONField
 
-from .settings import DATABASE_CONNECTION
+from vk.settings import DATABASE_CONNECTION
 
 # настройки подключения к БД
 db = PostgresqlExtDatabase(
