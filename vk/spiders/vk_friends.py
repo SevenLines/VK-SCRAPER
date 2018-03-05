@@ -11,7 +11,7 @@ class VkFriendsSpider(scrapy.Spider):
 
     def get_url(self, id):
         return 'https://api.vk.com/method/friends.get' \
-               '?user_id={id}&v=5.52&fields=nickname,bdate,photo_200,education,city,sex'.format(id=id)
+               '?user_id={id}&v=5.52&count=10000&fields=nickname,bdate,photo_200,education,city,sex'.format(id=id)
 
     def start_requests(self):
         urls = [("https://api.vk.com/method/users.get" \
@@ -19,42 +19,27 @@ class VkFriendsSpider(scrapy.Spider):
                  _id) for _id in self.crawler.settings.get('START_IDS')]
 
         for url, _id in urls:
-            yield scrapy.Request(url, callback=self.start_parse, meta={
+            yield scrapy.Request(url, callback=self.parse, meta={
                 'user_id': _id,
+                'depth': 1,
                 'proxy': self.crawler.settings.get('PROXY_URL')
             }, cookies={'remixlang': 0})
 
-    def start_parse(self, response):
-        data = json.loads(response.text)
-        for item in data['response']:
-            item['depth'] = 1
-            yield item
-        url = self.get_url(item['id'])
-
-        yield scrapy.Request(url, callback=self.parse, meta={
-            'parent_id': item['id'],
-            'proxy': self.crawler.settings.get('PROXY_URL')
-        }, cookies={'remixlang': 0})
-
-    def _parse(self, response, callback):
-        data = json.loads(response.text)
-        for item in data['response']['items']:
-            item['depth'] = 2
-            item['parent_id'] = response.meta['parent_id']
-            yield item
-
-            # url = self.get_url(item['id'])
-            # yield scrapy.Request(url, callback=callback, meta={
-            #     'parent_id': item['id'],
-            #     'proxy': self.crawler.settings.get('PROXY_URL')
-            # }, cookies={'remixlang': 0})
-
     def parse(self, response):
-        return self._parse(response, self.parse2)
-
-    def parse2(self, response):
         data = json.loads(response.text)
-        for item in data['response']['items']:
-            item['depth'] = 3
-            item['parent_id'] = response.meta['parent_id']
+        items = data['response']['items'] if 'items' in data['response'] else data['response']
+        for item in items:
+            item['depth'] = response.meta['depth']
+            if 'parent_id' in response.meta:
+                item['parent_id'] = response.meta['parent_id']
             yield item
+
+            url = self.get_url(item['id'])
+
+            # контроль глубины
+            if response.meta['depth'] < self.crawler.settings.get('DEPTH'):
+                yield scrapy.Request(url, callback=self.parse, meta={
+                    'parent_id': item['id'],
+                    'depth': response.meta['depth'] + 1,
+                    'proxy': self.crawler.settings.get('PROXY_URL')
+                }, cookies={'remixlang': 0})

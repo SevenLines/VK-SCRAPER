@@ -19,7 +19,9 @@ START_IDS = [
 
 ]
 
-PROXY_URL = "http://178.218.45.58:8080"  # прокся, подставьте какую-нибудь работающую
+DEPTH = 3
+
+PROXY_URL = "http://188.40.141.216:3128"  # прокся, подставьте какую-нибудь работающую
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'vk (+http://www.yourdomain.com)'

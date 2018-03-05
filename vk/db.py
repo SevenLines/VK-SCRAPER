@@ -22,6 +22,7 @@ class BaseModel(peewee.Model):
 class Users(BaseModel):
     vk_id = peewee.IntegerField(index=True)
     meta = BinaryJSONField()
+    depth = peewee.IntegerField()
 
 
 # связи между пользователями
